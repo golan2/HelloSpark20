@@ -7,13 +7,11 @@ import org.apache.spark.sql.SparkSession;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class SparkQueryEngine {
+public class SelectFromCassandraExample {
 
     public static void main(String[] args) {
 
-        SparkSession spark = null;
-        try {
-            spark = createSparkSession();
+        try (SparkSession spark = createSparkSession()) {
             final HashMap<String, String> options = new HashMap<String, String>() {
                 {
                     put("keyspace", "activity");
@@ -33,14 +31,8 @@ public class SparkQueryEngine {
             Dataset<Row> dataset1 = spark.sql(formatSelectQuery(time72));
             dataset1.show();
 
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
-        }
-        finally {
-            if (spark != null) {
-                spark.close();
-            }
         }
 
 
@@ -54,7 +46,7 @@ public class SparkQueryEngine {
     private static SparkSession createSparkSession() {
         return SparkSession
                 .builder()
-                .appName(SparkQueryEngine.class.getSimpleName())
+                .appName(SelectFromCassandraExample.class.getSimpleName())
                 .config("spark.cassandra.connection.host", "localhost")
                 .config("spark.cassandra.connection.port", "9042")
                 .master("local[*]")
